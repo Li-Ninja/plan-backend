@@ -13,7 +13,7 @@ const connectToServer = () => {
       console.info("Successfully connected to MongoDB.");
     })
     .catch(err => {
-      console.err('Failed connect', err);
+      console.error('Failed connect', err);
     })
 };
 
