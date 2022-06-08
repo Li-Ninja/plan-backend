@@ -1,24 +1,23 @@
-const mongodb = require('mongodb');
-const url = 'mongodb+srv://root:rootau4a83@mycluster.xr8zjdk.mongodb.net/?retryWrites=true&w=majority';
-const client = new mongodb.MongoClient(url);
-const objectId = mongodb.ObjectId;
-let dbConnection = null;
+const mongoose = require('mongoose');
+
+require('./env');
+
+const dbUri = process.env.DB
+                .replace('<DB_PASSWORD>', process.env.DB_PASSWORD)
+                .replace('<DB_NAME>', process.env.DB_NAME);
+let dbConnection;
+
+const connectToServer = () => {
+  mongoose.connect(dbUri)
+    .then(() => {
+      console.info("Successfully connected to MongoDB.");
+    })
+    .catch(err => {
+      console.err('Failed connect', err);
+    })
+};
 
 module.exports = {
-  connectToServer: (callback) => {
-    client.connect((err, db) => {
-      if (err || !db) {
-        return callback(err);
-      }
-    })
-
-    dbConnection = db.db('Plan');
-    console.log('Successfully connected to MongoDB.');
-
-    return callback;
-  },
-
-  getDb: () => {
-    return dbConnection;
-  }
-}
+  connectToServer,
+  getDb: () => dbConnection
+};
